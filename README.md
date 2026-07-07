@@ -7,6 +7,7 @@
 
 ## URL
 - **開発プレビュー（sandbox）**: https://3000-iuu45cp1y072lqbwcd8ow-b32ec7bb.sandbox.novita.ai
+- **GitHub**: https://github.com/daichi763/saasdemo
 - **ログイン**: `/login`（会社コード + ユーザーコード + パスワード）
 - **本番デプロイ**: 未実施（Cloudflare Pages へデプロイ可能な構成）
 
