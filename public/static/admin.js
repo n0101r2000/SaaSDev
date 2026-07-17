@@ -37,14 +37,14 @@ async function renderDashboard() {
   const { data } = await axios.get('/api/admin/dashboard')
   const un = data.unreported
   const kpi = (label, value, icon, color, sub) => `
-    <div class="card p-4">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-xs text-gray-500">${label}</p>
-          <p class="text-2xl font-bold text-gray-900 mt-0.5">${value}</p>
-          ${sub ? `<p class="text-xs text-gray-400 mt-0.5">${sub}</p>` : ''}
+    <div class="card p-4 min-w-0">
+      <div class="flex items-center justify-between gap-2">
+        <div class="min-w-0">
+          <p class="text-xs text-gray-500 truncate">${label}</p>
+          <p class="text-2xl font-bold text-gray-900 mt-0.5 break-words">${value}</p>
+          ${sub ? `<p class="text-xs text-gray-400 mt-0.5 truncate">${sub}</p>` : ''}
         </div>
-        <span class="w-10 h-10 rounded-xl ${color} flex items-center justify-center"><i class="fas ${icon}"></i></span>
+        <span class="w-10 h-10 rounded-xl ${color} flex items-center justify-center shrink-0"><i class="fas ${icon}"></i></span>
       </div>
     </div>`
 
@@ -96,7 +96,7 @@ async function renderDashboard() {
         <div class="space-y-2 max-h-80 overflow-y-auto">
           ${data.incidents.map(i => `
             <div class="p-2.5 rounded-lg bg-gray-50 border border-gray-100">
-              <div class="flex items-center gap-2 text-xs mb-1">
+              <div class="flex items-center gap-2 text-xs mb-1 flex-wrap">
                 ${i.incident_flag ? '<span class="badge badge-red">インシデント</span>' : ''}
                 ${i.complaint_flag ? '<span class="badge badge-purple">クレーム</span>' : ''}
                 <span class="text-gray-500">${dayjs(i.work_date).format('M/D')}</span>
@@ -204,7 +204,7 @@ function drawStaffTable(filter) {
       ${[['all', 'すべて'], ['follow', '要フォロー'], ['risk', '離職リスク'], ['noreport', '本日未入店'], ['lowscore', '評価3未満']].map(([k, v]) =>
         `<button class="btn ${filter === k ? 'btn-primary' : 'btn-outline'}" onclick="drawStaffTable('${k}')">${v}</button>`).join('')}
     </div>
-    <div class="card overflow-x-auto">
+    <div class="hidden md:block card overflow-x-auto">
       <table class="tbl">
         <thead><tr><th>番号</th><th>氏名</th><th>所属案件</th><th>今月稼働</th><th>今月成約</th><th>評価</th><th>離職リスク</th><th>要フォロー</th><th>最終稼働</th><th>最終日報</th></tr></thead>
         <tbody>
@@ -223,6 +223,28 @@ function drawStaffTable(filter) {
             </tr>`).join('')}
         </tbody>
       </table>
+    </div>
+
+    <div class="md:hidden space-y-2">
+      ${list.map(s => `
+        <div class="card p-3 cursor-pointer" onclick="location.hash='staff/${s.staff_id}'">
+          <div class="flex items-center justify-between gap-2 mb-1.5">
+            <div class="min-w-0 flex-1">
+              <p class="font-bold text-blue-700 truncate">${esc(s.name)} <span class="text-xs font-normal text-gray-400">${esc(s.user_code)}</span></p>
+              <p class="text-xs text-gray-500 truncate">${esc(s.projects || '-')}</p>
+            </div>
+            <i class="fas fa-chevron-right text-gray-300 text-xs shrink-0"></i>
+          </div>
+          <div class="flex flex-wrap gap-1.5 mb-1.5">
+            ${RISK_BADGE[s.retention_risk] || ''}
+            ${s.follow_flag ? '<span class="badge badge-red">要フォロー</span>' : ''}
+            <span class="badge badge-gray">評価 ${Number(s.evaluation_score).toFixed(1)}</span>
+          </div>
+          <div class="flex items-center justify-between text-xs text-gray-500 pt-1.5 border-t border-gray-50">
+            <span>今月稼働 <b class="text-gray-800">${s.month_days}日</b> ／ 成約 <b class="text-gray-800">${s.month_seiyaku || 0}</b></span>
+            <span>最終稼働 ${s.last_work_date ? dayjs(s.last_work_date).format('M/D') : '-'}</span>
+          </div>
+        </div>`).join('') || '<p class="text-center text-gray-400 py-10">該当スタッフはいません</p>'}
     </div>`
 }
 window.drawStaffTable = drawStaffTable
@@ -329,7 +351,7 @@ async function renderStaffDetail(sid) {
         <div class="space-y-2 max-h-72 overflow-y-auto">
           ${data.follow_logs.map(f => `
             <div class="p-2.5 rounded-lg bg-gray-50">
-              <div class="flex items-center gap-2 text-xs mb-1">
+              <div class="flex items-center gap-2 text-xs mb-1 flex-wrap">
                 <span class="badge badge-purple">${FOLLOW_LABELS[f.follow_type] || f.follow_type}</span>
                 <span class="text-gray-400">${dayjs(f.created_at).format('M/D HH:mm')}</span>
                 <span class="text-gray-500">${esc(f.manager_name || '')}</span>
@@ -346,7 +368,7 @@ async function renderStaffDetail(sid) {
         <div class="space-y-2 max-h-72 overflow-y-auto">
           ${data.reports.map(r => `
             <div class="p-2.5 rounded-lg bg-gray-50">
-              <div class="flex items-center gap-2 text-xs mb-1">
+              <div class="flex items-center gap-2 text-xs mb-1 flex-wrap">
                 <span class="font-bold text-gray-700">${dayjs(r.work_date).format('M/D')}</span>
                 <span class="text-gray-400">${esc(r.project_name)}</span>
                 ${r.incident_flag ? '<span class="badge badge-red">インシデント</span>' : ''}
@@ -459,7 +481,7 @@ async function renderProjects() {
       <h2 class="text-xl font-bold text-gray-900">案件管理</h2>
       <button class="btn btn-primary" onclick="showAddProject()"><i class="fas fa-plus"></i>案件登録</button>
     </div>
-    <div class="card overflow-x-auto">
+    <div class="hidden md:block card overflow-x-auto">
       <table class="tbl">
         <thead><tr><th>案件名</th><th>クライアント</th><th>種別</th><th>稼働場所</th><th>単価</th><th>今月稼働</th><th>今月成約</th><th>インシデント</th><th>状態</th></tr></thead>
         <tbody>
@@ -477,6 +499,27 @@ async function renderProjects() {
             </tr>`).join('')}
         </tbody>
       </table>
+    </div>
+
+    <div class="md:hidden space-y-2">
+      ${data.projects.map(p => `
+        <div class="card p-3 cursor-pointer" onclick="location.hash='projects/${p.project_id}'">
+          <div class="flex items-start justify-between gap-2 mb-1.5">
+            <div class="min-w-0 flex-1">
+              <p class="font-bold text-blue-700 truncate">${esc(p.project_name)}</p>
+              <p class="text-xs text-gray-500 truncate">${esc(p.client_name || '-')} ／ ${esc(p.location || '-')}</p>
+            </div>
+            <span class="shrink-0">${p.status === 'active' ? '<span class="badge badge-green">稼働中</span>' : '<span class="badge badge-gray">終了</span>'}</span>
+          </div>
+          <div class="flex flex-wrap gap-1.5 mb-1.5">
+            <span class="badge badge-gray">${PTYPE_LABELS[p.project_type] || p.project_type}</span>
+            ${p.incidents ? `<span class="badge badge-red">インシデント ${p.incidents}件</span>` : ''}
+          </div>
+          <div class="flex items-center justify-between text-xs text-gray-500 pt-1.5 border-t border-gray-50">
+            <span class="break-words">${yen(p.unit_price)}/日</span>
+            <span>今月 ${p.month_shifts}件 (${p.staff_count}名) ／ 成約 <b class="text-gray-800">${p.month_seiyaku || 0}</b></span>
+          </div>
+        </div>`).join('') || '<p class="text-center text-gray-400 py-10">案件がありません</p>'}
     </div>`
 }
 
@@ -520,19 +563,19 @@ async function renderProjectDetail(pid) {
   const p = data.project
   $app.innerHTML = `
     <div class="flex items-center gap-3 mb-5">
-      <a href="#projects" class="btn btn-outline"><i class="fas fa-arrow-left"></i></a>
-      <div class="flex-1">
-        <h2 class="text-xl font-bold text-gray-900">${esc(p.project_name)}</h2>
-        <p class="text-sm text-gray-500">${esc(p.client_name || '')} ｜ ${PTYPE_LABELS[p.project_type] || ''} ｜ ${esc(p.location || '')}</p>
+      <a href="#projects" class="btn btn-outline shrink-0"><i class="fas fa-arrow-left"></i></a>
+      <div class="flex-1 min-w-0">
+        <h2 class="text-xl font-bold text-gray-900 truncate">${esc(p.project_name)}</h2>
+        <p class="text-sm text-gray-500 truncate">${esc(p.client_name || '')} ｜ ${PTYPE_LABELS[p.project_type] || ''} ｜ ${esc(p.location || '')}</p>
       </div>
-      <span class="badge ${p.status === 'active' ? 'badge-green' : 'badge-gray'}">${p.status === 'active' ? '稼働中' : '終了'}</span>
+      <span class="badge ${p.status === 'active' ? 'badge-green' : 'badge-gray'} shrink-0">${p.status === 'active' ? '稼働中' : '終了'}</span>
     </div>
 
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-      <div class="card p-4"><p class="text-xs text-gray-500">単価</p><p class="text-xl font-bold">${yen(p.unit_price)}<span class="text-xs font-normal text-gray-400">/日</span></p></div>
-      <div class="card p-4"><p class="text-xs text-gray-500">今月稼働</p><p class="text-xl font-bold">${data.month_summary.n || 0}<span class="text-xs font-normal text-gray-400">件</span></p></div>
-      <div class="card p-4"><p class="text-xs text-gray-500">今月売上（概算）</p><p class="text-xl font-bold">${yen(data.month_summary.revenue)}</p></div>
-      <div class="card p-4"><p class="text-xs text-gray-500">日報テンプレート</p><p class="text-sm font-bold mt-1">${esc(p.template_name || '-')}</p></div>
+      <div class="card p-4 min-w-0"><p class="text-xs text-gray-500">単価</p><p class="text-xl font-bold break-words">${yen(p.unit_price)}<span class="text-xs font-normal text-gray-400">/日</span></p></div>
+      <div class="card p-4 min-w-0"><p class="text-xs text-gray-500">今月稼働</p><p class="text-xl font-bold break-words">${data.month_summary.n || 0}<span class="text-xs font-normal text-gray-400">件</span></p></div>
+      <div class="card p-4 min-w-0"><p class="text-xs text-gray-500">今月売上（概算）</p><p class="text-xl font-bold break-words">${yen(data.month_summary.revenue)}</p></div>
+      <div class="card p-4 min-w-0"><p class="text-xs text-gray-500">日報テンプレート</p><p class="text-sm font-bold mt-1 truncate">${esc(p.template_name || '-')}</p></div>
     </div>
 
     <div class="grid lg:grid-cols-2 gap-4 mb-4">
@@ -1017,7 +1060,7 @@ async function renderBilling(month) {
     </div>
     <section class="card p-4 mb-4">
       <h3 class="text-sm font-bold text-gray-700 mb-3">案件別サマリー</h3>
-      <div class="overflow-x-auto">
+      <div class="hidden md:block overflow-x-auto">
         <table class="tbl">
           <thead><tr><th>案件</th><th>クライアント</th><th>稼働日数</th><th>稼働人数</th><th>欠勤</th><th>代打</th><th>日報提出</th><th>稼働金額</th><th>交通費</th><th>合計</th></tr></thead>
           <tbody>${data.by_project.map(p => `
@@ -1034,10 +1077,32 @@ async function renderBilling(month) {
           </tbody>
         </table>
       </div>
+      <div class="md:hidden space-y-2">
+        ${data.by_project.map(p => `
+          <div class="border border-gray-100 rounded-xl p-3">
+            <div class="flex items-start justify-between gap-2 mb-1.5">
+              <div class="min-w-0 flex-1">
+                <p class="font-bold text-gray-800 truncate">${esc(p.project_name)}</p>
+                <p class="text-xs text-gray-500 truncate">${esc(p.client_name || '-')}</p>
+              </div>
+              ${p.report_count < p.work_days ? '<i class="fas fa-triangle-exclamation text-amber-500 shrink-0 mt-1"></i>' : '<i class="fas fa-check text-emerald-500 shrink-0 mt-1"></i>'}
+            </div>
+            <div class="flex flex-wrap gap-1.5 mb-1.5 text-xs text-gray-500">
+              <span>稼働 ${p.work_days}日 (${p.staff_count}名)</span>
+              <span>日報 ${p.report_count}/${p.work_days}</span>
+              ${p.absent_days ? `<span class="badge badge-red">欠勤 ${p.absent_days}</span>` : ''}
+              ${p.substitute_days ? `<span class="badge badge-purple">代打 ${p.substitute_days}</span>` : ''}
+            </div>
+            <div class="flex items-center justify-between text-xs pt-1.5 border-t border-gray-50">
+              <span class="text-gray-500 break-words">稼働 ${yen(p.total_amount)} ＋ 交通費 ${yen(p.total_transport)}</span>
+              <span class="font-bold text-gray-800">${yen((p.total_amount || 0) + (p.total_transport || 0))}</span>
+            </div>
+          </div>`).join('') || '<p class="text-center text-gray-400 py-6">データがありません</p>'}
+      </div>
     </section>
     <section class="card p-4">
       <h3 class="text-sm font-bold text-gray-700 mb-3">スタッフ別明細</h3>
-      <div class="overflow-x-auto">
+      <div class="hidden md:block overflow-x-auto">
         <table class="tbl" id="billing-detail">
           <thead><tr><th>スタッフ</th><th>案件</th><th>稼働日数</th><th>欠勤</th><th>稼働金額</th><th>交通費</th><th>合計</th></tr></thead>
           <tbody>${data.detail.map(d => `
@@ -1050,6 +1115,20 @@ async function renderBilling(month) {
             </tr>`).join('')}
           </tbody>
         </table>
+      </div>
+      <div class="md:hidden space-y-2">
+        ${data.detail.map(d => `
+          <div class="border border-gray-100 rounded-xl p-3 cursor-pointer" onclick="location.hash='staff/${d.staff_id}'">
+            <div class="flex items-center justify-between gap-2 mb-1">
+              <p class="font-bold text-blue-700 truncate">${esc(d.name)}</p>
+              <span class="text-xs text-gray-400 shrink-0">稼働${d.work_days}日${d.absent_days ? ' ／ 欠勤' + d.absent_days : ''}</span>
+            </div>
+            <p class="text-xs text-gray-500 truncate mb-1.5">${esc(d.project_name)}</p>
+            <div class="flex items-center justify-between text-xs pt-1.5 border-t border-gray-50">
+              <span class="text-gray-500 break-words">稼働 ${yen(d.amount)} ＋ 交通費 ${yen(d.transport)}</span>
+              <span class="font-bold text-gray-800">${yen((d.amount || 0) + (d.transport || 0))}</span>
+            </div>
+          </div>`).join('') || '<p class="text-center text-gray-400 py-6">データがありません</p>'}
       </div>
     </section>`
   window._billingData = data
