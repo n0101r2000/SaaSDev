@@ -2,7 +2,10 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "webapp",
   "compatibility_date": "2026-04-26",
-  "pages_build_output_dir": "./dist",
+  "main": "./dist/_worker.js",
+  "assets": {
+    "directory": "./dist"
+  },
   "compatibility_flags": ["nodejs_compat"],
   "d1_databases": [
     {
@@ -12,3 +15,4 @@
     }
   ]
 }
+
