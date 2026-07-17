@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "webapp",
+  "name": "saasdev",
   "compatibility_date": "2026-04-26",
   "main": "./dist/_worker.js",
   "assets": {
