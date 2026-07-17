@@ -57,7 +57,7 @@ async function renderDashboard() {
     </div>`
 
   $app.innerHTML = `
-    <div class="flex items-center justify-between mb-5">
+    <div class="flex items-center justify-between mb-5 flex-wrap gap-2">
       <div>
         <h2 class="text-xl font-bold text-gray-900">管理者ダッシュボード</h2>
         <p class="text-sm text-gray-500">${dayjs(data.today).format('YYYY年M月D日')} — 今日見るべきこと・対応すべきこと</p>
@@ -112,6 +112,7 @@ async function renderDashboard() {
     <div class="grid lg:grid-cols-2 gap-4 mb-5">
       <section class="card p-4">
         <h3 class="font-bold text-gray-800 mb-3"><i class="fas fa-hand-holding-heart text-amber-500 mr-1"></i>要フォロースタッフ</h3>
+        <div class="overflow-x-auto">
         <table class="tbl">
           <thead><tr><th>氏名</th><th>離職リスク</th><th>評価</th><th>メモ</th><th></th></tr></thead>
           <tbody>
@@ -125,10 +126,12 @@ async function renderDashboard() {
               </tr>`).join('') || '<tr><td colspan="5" class="text-center text-gray-400 py-4">要フォロースタッフはいません</td></tr>'}
           </tbody>
         </table>
+        </div>
       </section>
 
       <section class="card p-4">
         <h3 class="font-bold text-gray-800 mb-3"><i class="fas fa-briefcase text-blue-600 mr-1"></i>今月の案件別実績</h3>
+        <div class="overflow-x-auto">
         <table class="tbl">
           <thead><tr><th>案件</th><th>日報</th><th>MNP</th><th>PI</th><th>新規</th><th>光</th><th>成約</th></tr></thead>
           <tbody>
@@ -140,6 +143,7 @@ async function renderDashboard() {
               </tr>`).join('')}
           </tbody>
         </table>
+        </div>
       </section>
     </div>
 
@@ -227,12 +231,12 @@ window.showAddStaff = function () {
   modal(`
     <h3 class="font-bold text-lg mb-4">スタッフ登録</h3>
     <div class="space-y-3">
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div><label class="text-sm text-gray-600 block mb-1">スタッフ番号 *</label><input id="ns-code" class="inp" placeholder="st021"></div>
         <div><label class="text-sm text-gray-600 block mb-1">氏名 *</label><input id="ns-name" class="inp" placeholder="山田 太郎"></div>
       </div>
       <div><label class="text-sm text-gray-600 block mb-1">初期パスワード *</label><input id="ns-pass" class="inp" value="pass1234"></div>
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div><label class="text-sm text-gray-600 block mb-1">メール</label><input id="ns-email" class="inp"></div>
         <div><label class="text-sm text-gray-600 block mb-1">電話</label><input id="ns-phone" class="inp"></div>
       </div>
@@ -308,12 +312,14 @@ async function renderStaffDetail(sid) {
 
       <section class="card p-4">
         <h3 class="text-sm font-bold text-gray-700 mb-3">月次実績推移</h3>
+        <div class="overflow-x-auto">
         <table class="tbl">
           <thead><tr><th>月</th><th>日数</th><th>MNP</th><th>PI</th><th>新規</th><th>光</th><th>成約</th></tr></thead>
           <tbody>${data.performance.map(m => `
             <tr><td>${esc(m.ym)}</td><td>${m.days}</td><td>${m.mnp}</td><td>${m.pi}</td><td>${m.shinki}</td><td>${m.hikari}</td><td class="font-bold">${m.seiyaku}</td></tr>`).join('') || '<tr><td colspan="7" class="text-gray-400 text-center py-3">データなし</td></tr>'}
           </tbody>
         </table>
+        </div>
       </section>
     </div>
 
@@ -403,7 +409,7 @@ window.showSkillSheet = async function (sid) {
   const { data } = await axios.get('/api/admin/staff/' + sid + '/skill-sheet')
   const p = data.profile, perf = data.performance, ev = data.evaluation
   modal(`
-    <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
       <h3 class="font-bold text-lg"><i class="fas fa-file-lines text-blue-600 mr-1"></i>スキルシート</h3>
       <button class="btn btn-outline text-xs" onclick="window.print()"><i class="fas fa-print"></i>印刷</button>
     </div>
@@ -415,7 +421,7 @@ window.showSkillSheet = async function (sid) {
       <div><p class="text-xs font-bold text-gray-400 mb-1">保有スキル</p>
         <div class="flex flex-wrap gap-1">${(p.skills || '').split(',').filter(Boolean).map(s => `<span class="badge badge-purple">${esc(s)}</span>`).join('') || '-'}</div></div>
       <div><p class="text-xs font-bold text-gray-400 mb-1">通算実績（${perf.total_days || 0}稼働日）</p>
-        <div class="grid grid-cols-5 gap-2 text-center">
+        <div class="grid grid-cols-3 sm:grid-cols-5 gap-2 text-center">
           ${[['MNP', perf.mnp], ['PI', perf.pi], ['新規', perf.shinki], ['光回線', perf.hikari], ['成約', perf.seiyaku]].map(([l, v]) =>
             `<div class="bg-gray-50 rounded-lg py-2"><p class="font-bold text-blue-600">${v || 0}</p><p class="text-xs text-gray-500">${l}</p></div>`).join('')}
         </div></div>
@@ -449,7 +455,7 @@ async function renderProjects() {
   loading()
   const { data } = await axios.get('/api/admin/projects')
   $app.innerHTML = `
-    <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
       <h2 class="text-xl font-bold text-gray-900">案件管理</h2>
       <button class="btn btn-primary" onclick="showAddProject()"><i class="fas fa-plus"></i>案件登録</button>
     </div>
@@ -480,14 +486,14 @@ window.showAddProject = async function () {
     <h3 class="font-bold text-lg mb-4">案件登録</h3>
     <div class="space-y-3">
       <div><label class="text-sm text-gray-600 block mb-1">案件名 *</label><input id="np-name" class="inp"></div>
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div><label class="text-sm text-gray-600 block mb-1">クライアント</label>
           <select id="np-client" class="inp">${cl.clients.map(c => `<option value="${c.client_id}">${esc(c.client_name)}</option>`).join('')}</select></div>
         <div><label class="text-sm text-gray-600 block mb-1">業務種別</label>
           <select id="np-type" class="inp">${Object.entries(PTYPE_LABELS).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select></div>
       </div>
       <div><label class="text-sm text-gray-600 block mb-1">稼働場所</label><input id="np-loc" class="inp"></div>
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div><label class="text-sm text-gray-600 block mb-1">日単価（円）</label><input id="np-price" type="number" class="inp" value="16000"></div>
         <div><label class="text-sm text-gray-600 block mb-1">日報テンプレート</label>
           <select id="np-tpl" class="inp">${tp.templates.map(t => `<option value="${t.template_id}">${esc(t.template_name)}</option>`).join('')}</select></div>
@@ -532,6 +538,7 @@ async function renderProjectDetail(pid) {
     <div class="grid lg:grid-cols-2 gap-4 mb-4">
       <section class="card p-4">
         <h3 class="text-sm font-bold text-gray-700 mb-3">スタッフ別実績（今月）</h3>
+        <div class="overflow-x-auto">
         <table class="tbl">
           <thead><tr><th>スタッフ</th><th>日数</th><th>MNP</th><th>PI</th><th>新規</th><th>光</th><th>成約</th></tr></thead>
           <tbody>${data.staff_performance.map(s => `
@@ -539,6 +546,7 @@ async function renderProjectDetail(pid) {
             <td>${s.days}</td><td>${s.mnp}</td><td>${s.pi}</td><td>${s.shinki}</td><td>${s.hikari}</td><td class="font-bold">${s.seiyaku}</td></tr>`).join('') || '<tr><td colspan="7" class="text-center text-gray-400 py-3">データなし</td></tr>'}
           </tbody>
         </table>
+        </div>
       </section>
       <section class="card p-4">
         <h3 class="text-sm font-bold text-gray-700 mb-3"><i class="fas fa-bolt text-red-500 mr-1"></i>インシデント・クレーム</h3>
@@ -580,7 +588,7 @@ async function renderClients() {
   loading()
   const { data } = await axios.get('/api/admin/clients')
   $app.innerHTML = `
-    <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
       <h2 class="text-xl font-bold text-gray-900">クライアント管理</h2>
       <button class="btn btn-primary" onclick="showAddClient()"><i class="fas fa-plus"></i>クライアント登録</button>
     </div>
@@ -609,13 +617,13 @@ window.showAddClient = function () {
     <h3 class="font-bold text-lg mb-4">クライアント登録</h3>
     <div class="space-y-3">
       <div><label class="text-sm text-gray-600 block mb-1">クライアント名 *</label><input id="nc-name" class="inp"></div>
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div><label class="text-sm text-gray-600 block mb-1">上流/下流</label>
           <select id="nc-stream" class="inp"><option value="upstream">上流</option><option value="downstream">下流</option></select></div>
         <div><label class="text-sm text-gray-600 block mb-1">契約形態</label>
           <select id="nc-contract" class="inp"><option>業務委託</option><option>派遣</option><option>請負</option><option>紹介</option></select></div>
       </div>
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div><label class="text-sm text-gray-600 block mb-1">担当者</label><input id="nc-contact" class="inp"></div>
         <div><label class="text-sm text-gray-600 block mb-1">電話</label><input id="nc-phone" class="inp"></div>
       </div>
@@ -684,18 +692,18 @@ window.showAddShift = async function (defaultDate) {
   modal(`
     <h3 class="font-bold text-lg mb-4">シフト登録</h3>
     <div class="space-y-3">
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div><label class="text-sm text-gray-600 block mb-1">スタッフ *</label>
           <select id="sh-staff" class="inp">${st.staff.map(s => `<option value="${s.staff_id}">${esc(s.name)}</option>`).join('')}</select></div>
         <div><label class="text-sm text-gray-600 block mb-1">案件 *</label>
           <select id="sh-project" class="inp">${pj.projects.filter(p => p.status === 'active').map(p => `<option value="${p.project_id}">${esc(p.project_name)}</option>`).join('')}</select></div>
       </div>
       <div><label class="text-sm text-gray-600 block mb-1">日付 *</label><input id="sh-date" type="date" class="inp" value="${defaultDate || ''}"></div>
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div><label class="text-sm text-gray-600 block mb-1">開始</label><input id="sh-start" type="time" value="09:30" class="inp"></div>
         <div><label class="text-sm text-gray-600 block mb-1">終了</label><input id="sh-end" type="time" value="19:00" class="inp"></div>
       </div>
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div><label class="text-sm text-gray-600 block mb-1">状態</label>
           <select id="sh-status" class="inp"><option value="confirmed">確定</option><option value="requested">希望</option><option value="substitute">代打</option></select></div>
         <div><label class="text-sm text-gray-600 block mb-1">交通費</label><input id="sh-fee" type="number" value="1200" class="inp"></div>
@@ -790,7 +798,7 @@ async function renderAnalytics(month) {
   const rate = t.shodan ? Math.round((t.seiyaku / t.shodan) * 100) : 0
 
   $app.innerHTML = `
-    <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
       <h2 class="text-xl font-bold text-gray-900">実績分析</h2>
       <div class="flex gap-2 items-center">
         <button class="btn btn-outline" onclick="renderAnalytics('${dayjs(month + '-01').subtract(1, 'month').format('YYYY-MM')}')"><i class="fas fa-chevron-left"></i></button>
@@ -809,6 +817,7 @@ async function renderAnalytics(month) {
     <div class="grid lg:grid-cols-2 gap-4">
       <section class="card p-4">
         <h3 class="text-sm font-bold text-gray-700 mb-3"><i class="fas fa-ranking-star text-amber-500 mr-1"></i>スタッフ別ランキング（成約順）</h3>
+        <div class="overflow-x-auto">
         <table class="tbl">
           <thead><tr><th>#</th><th>スタッフ</th><th>日数</th><th>MNP</th><th>光</th><th>成約</th></tr></thead>
           <tbody>${data.by_staff.map((s, i) => `
@@ -817,10 +826,12 @@ async function renderAnalytics(month) {
             <td>${s.days}</td><td>${s.mnp}</td><td>${s.hikari}</td><td class="font-bold">${s.seiyaku}</td></tr>`).join('')}
           </tbody>
         </table>
+        </div>
       </section>
       <div class="space-y-4">
         <section class="card p-4">
           <h3 class="text-sm font-bold text-gray-700 mb-3">案件別実績</h3>
+          <div class="overflow-x-auto">
           <table class="tbl">
             <thead><tr><th>案件</th><th>日報</th><th>MNP</th><th>光</th><th>成約</th></tr></thead>
             <tbody>${data.by_project.map(p => `
@@ -828,15 +839,18 @@ async function renderAnalytics(month) {
               <td>${p.days}</td><td>${p.mnp}</td><td>${p.hikari}</td><td class="font-bold">${p.seiyaku}</td></tr>`).join('')}
             </tbody>
           </table>
+          </div>
         </section>
         <section class="card p-4">
           <h3 class="text-sm font-bold text-gray-700 mb-3">クライアント別実績</h3>
+          <div class="overflow-x-auto">
           <table class="tbl">
             <thead><tr><th>クライアント</th><th>日報</th><th>成約</th></tr></thead>
             <tbody>${data.by_client.map(c => `
               <tr><td class="text-xs">${esc(c.client_name)}</td><td>${c.days}</td><td class="font-bold">${c.seiyaku}</td></tr>`).join('')}
             </tbody>
           </table>
+          </div>
         </section>
       </div>
     </div>`
@@ -867,7 +881,7 @@ async function renderNotices() {
         <div class="space-y-3">
           <div><label class="text-sm text-gray-600 block mb-1">タイトル *</label><input id="nt-title" class="inp"></div>
           <div><label class="text-sm text-gray-600 block mb-1">本文</label><textarea id="nt-body" rows="4" class="inp"></textarea></div>
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div><label class="text-sm text-gray-600 block mb-1">配信対象</label>
               <select id="nt-target" class="inp" onchange="document.getElementById('nt-project-wrap').style.display = this.value === 'project' ? 'block' : 'none'">
                 <option value="all">全スタッフ</option><option value="project">案件別</option>
