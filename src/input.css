@@ -2,7 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ===== 以下、既存の手書きCSSをそのまま貼り付け ===== */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
 
 /* Field OS 共通スタイル */
 * { -webkit-tap-highlight-color: transparent; }
