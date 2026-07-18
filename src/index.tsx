@@ -173,7 +173,7 @@ app.get('/admin', async (c) => {
         <button id="logout-btn" class="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-500 hover:bg-gray-50 mt-1"><i class="fas fa-right-from-bracket mr-1"></i>ログアウト</button>
       </div>
     </aside>
-    <div class="flex-1 md:ml-60">
+    <div class="flex-1 md:ml-60 min-w-0">
       <header class="md:hidden bg-white border-b border-gray-100 sticky top-0 z-20 px-4 py-3 flex items-center justify-between gap-2">
         <h1 class="font-bold text-gray-800 truncate min-w-0 flex-1"><i class="fas fa-tower-cell text-blue-600 mr-1"></i>Field OS 管理</h1>
         <select id="mobile-nav" class="text-sm border border-gray-200 rounded-lg px-2 py-1.5 w-32 shrink-0">
