@@ -2,11 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body {
-  overflow-x: hidden;
-  width: 100%;
-}
-
 /* Field OS 共通スタイル */
 * { -webkit-tap-highlight-color: transparent; }
 body { font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Noto Sans JP', Meiryo, sans-serif; }
