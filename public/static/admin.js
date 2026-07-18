@@ -37,7 +37,7 @@ async function renderDashboard() {
   const { data } = await axios.get('/api/admin/dashboard')
   const un = data.unreported
   const kpi = (label, value, icon, color, sub) => `
-    <div class="card p-4">
+    <div class="card p-4 min-w-0">
       <div class="flex items-center justify-between">
         <div class="min-w-0">
           <p class="text-xs text-gray-500">${label}</p>
