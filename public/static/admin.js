@@ -41,7 +41,7 @@ async function renderDashboard() {
       <div class="flex items-center justify-between">
         <div class="min-w-0">
           <p class="text-xs text-gray-500">${label}</p>
-          <p class="font-bold text-gray-900 mt-0.5 truncate" style="font-size: clamp(1rem, 5vw, 1.5rem)">${value}</p>
+          <p class="text-2xl font-bold text-gray-900 mt-0.5 truncate">${value}</p>
           ${sub ? `<p class="text-xs text-gray-400 mt-0.5">${sub}</p>` : ''}
         </div>
         <span class="w-10 h-10 rounded-xl ${color} flex items-center justify-center"><i class="fas ${icon}"></i></span>
@@ -65,7 +65,7 @@ async function renderDashboard() {
       <button class="btn btn-outline" onclick="renderDashboard()"><i class="fas fa-rotate"></i>更新</button>
     </div>
 
-    <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-5" id="kpi-cards">
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5" id="kpi-cards">
       ${kpi('本日の稼働予定', data.working_count + '名', 'fa-users', 'bg-blue-100 text-blue-600')}
       ${kpi('本日の売上予定', yen(data.revenue_forecast), 'fa-yen-sign', 'bg-emerald-100 text-emerald-600')}
       ${kpi('日報未提出（直近3日）', data.missing_daily_reports.length + '件', 'fa-file-circle-exclamation', data.missing_daily_reports.length ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-400')}
