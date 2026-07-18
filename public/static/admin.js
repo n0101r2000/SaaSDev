@@ -65,7 +65,7 @@ async function renderDashboard() {
       <button class="btn btn-outline" onclick="renderDashboard()"><i class="fas fa-rotate"></i>更新</button>
     </div>
 
-    <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-5" id="kpi-cards">
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5" id="kpi-cards">
       ${kpi('本日の稼働予定', data.working_count + '名', 'fa-users', 'bg-blue-100 text-blue-600')}
       ${kpi('本日の売上予定', yen(data.revenue_forecast), 'fa-yen-sign', 'bg-emerald-100 text-emerald-600')}
       ${kpi('日報未提出（直近3日）', data.missing_daily_reports.length + '件', 'fa-file-circle-exclamation', data.missing_daily_reports.length ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-400')}
