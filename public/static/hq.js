@@ -43,7 +43,7 @@ async function renderCompanies() {
   const kpi = (label, value, icon) => `
     <div class="bg-slate-800 border border-slate-700 rounded-xl p-4">
       <p class="text-xs text-slate-400">${label}</p>
-      <p class="text-2xl font-bold mt-0.5"><i class="fas ${icon} text-cyan-400 mr-2 text-lg"></i>${value}</p>
+      <p class="text-2xl font-bold mt-0.5 truncate"><i class="fas ${icon} text-cyan-400 mr-2 text-lg"></i>${value}</p>
     </div>`
 
   $app.innerHTML = `

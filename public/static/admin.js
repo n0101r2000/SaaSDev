@@ -39,9 +39,9 @@ async function renderDashboard() {
   const kpi = (label, value, icon, color, sub) => `
     <div class="card p-4">
       <div class="flex items-center justify-between">
-        <div>
+        <div class="min-w-0">
           <p class="text-xs text-gray-500">${label}</p>
-          <p class="text-2xl font-bold text-gray-900 mt-0.5">${value}</p>
+          <p class="text-2xl font-bold text-gray-900 mt-0.5 truncate">${value}</p>
           ${sub ? `<p class="text-xs text-gray-400 mt-0.5">${sub}</p>` : ''}
         </div>
         <span class="w-10 h-10 rounded-xl ${color} flex items-center justify-center"><i class="fas ${icon}"></i></span>
