@@ -174,9 +174,9 @@ app.get('/admin', async (c) => {
       </div>
     </aside>
     <div class="flex-1 md:ml-60">
-      <header class="md:hidden bg-white border-b border-gray-100 sticky top-0 z-20 px-4 py-3 flex items-center justify-between">
-        <h1 class="font-bold text-gray-800"><i class="fas fa-tower-cell text-blue-600 mr-1"></i>Field OS 管理</h1>
-        <select id="mobile-nav" class="text-sm border border-gray-200 rounded-lg px-2 py-1.5">
+      <header class="md:hidden bg-white border-b border-gray-100 sticky top-0 z-20 px-4 py-3 flex items-center justify-between gap-2">
+        <h1 class="font-bold text-gray-800 truncate min-w-0 flex-1"><i class="fas fa-tower-cell text-blue-600 mr-1"></i>Field OS 管理</h1>
+        <select id="mobile-nav" class="text-sm border border-gray-200 rounded-lg px-2 py-1.5 w-32 shrink-0">
           <option value="dashboard">ダッシュボード</option><option value="staff">スタッフ</option>
           <option value="projects">案件</option><option value="clients">クライアント</option>
           <option value="shifts">シフト</option><option value="reports">日報</option>
